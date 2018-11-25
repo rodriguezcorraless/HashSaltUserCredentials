@@ -4,7 +4,7 @@
 package edu.wit.cs.comp2000;
 
 import java.io.File;
-
+import java.io.FileNotFoundException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -14,7 +14,7 @@ import java.util.Scanner;
 
 public class UserLogin {
 
-	static Hashtable<String, Password> userTable;	// stores all relevant info about authentication
+	static Hashtable<String, Password> userTable = new Hashtable<>();	// stores all relevant info about authentication
 	private static final Random RandomObj = new SecureRandom();
 
 	/**
@@ -24,8 +24,46 @@ public class UserLogin {
 	 */
 	private static void AddUsersToTable(File userFile) {
 		// STUB
+		StringBuilder username;
+		StringBuilder salt;
+		StringBuilder hash;
+		
+		try (Scanner s1= new Scanner(userFile)){
+			String nextString = s1.nextLine();
+		
+		int i=0;
+		
+		while(s1.hasNextLine()) { //While there is a next line (next user) do this whole process
+			
+		
+			while(!(nextString.charAt(i)==':')) { //While we do not encounter the character ':'we will append the characters to get the username
+			username = new StringBuilder().append(nextString.charAt(i));
+			i++;
+			}
+			if(nextString.charAt(i) ==':') { 
+				i++; //Increment 'i' Look at next char after ':'
+				while(!(nextString.charAt(i)==':')) { //While we do not encounter the character ':'we will append the characters to get the salt
+					salt = new StringBuilder().append(nextString.charAt(i));
+					i++;
+		}
+		}
+			if(nextString.charAt(i) ==':') {
+				i++;
+				while(!(nextString.charAt(i)==':')) { //While we do not encounter the character ':'we will append the characters to get the salt
+					hash = new StringBuilder().append(nextString.charAt(i));
+					i++;
 	}
-
+		
+	}
+		}
+		}
+			catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	}
+		
+	
 	/**
 	 * Iterates through all key values in userTable and outputs lines
 	 * to userFile formatted like user:salt:hash
@@ -46,8 +84,18 @@ public class UserLogin {
 	 */
 	private static boolean AddUser(Scanner s) {
 		// STUB
-		return false;
+			System.out.println("Enter user to add:");
+			String username = s.next();
+
+			System.out.println("Enter password:");
+			String password = s.next().toString();
+			Password p = new Password(genHash(password), genSalt());
+			userTable.put(username, userTable.get(p));
+	
+		return true;
 	}
+	
+	
 	
 
 	/**
