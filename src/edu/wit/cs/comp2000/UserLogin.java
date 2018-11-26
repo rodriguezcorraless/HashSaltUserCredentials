@@ -97,20 +97,19 @@ public class UserLogin {
 	private static boolean AddUser(Scanner s) {
 		// STUB
 			System.out.println("Enter user to add:");
-			String username = s.next();
+			String username = s.nextLine();
 
 			System.out.println("Enter password:");
-			String password = s.next();
-			
-			Password p = new Password(genSalt(), genHash(password));
+			String password = s.nextLine();
+			String salt = genSalt();
+			String pw = salt + password;
+			Password p = new Password(genHash(pw), salt);
 			userTable.put(username, p);
 	
 		return true;
 	}
 	
 	
-	
-
 	/**
 	 * Prompts the user for a username/password and checks the userTable for
 	 * the resulting combination
@@ -122,39 +121,33 @@ public class UserLogin {
 		// STUB
 		Scanner s1 = new Scanner(System.in);
 		
-		String unameInput;
-		String passInput;
-		
 		System.out.println("Username?");
-		unameInput = s1.nextLine();
+		String unameInput = s1.nextLine();
 		
-		Set<String>usernames =userTable.keySet();
+		System.out.println("Password?");
+		String passInput = s1.nextLine();
+				
+				if(userTable.containsKey(unameInput)) { //If the username matches, check if the password matches
+				
+				Password password = userTable.get(unameInput);
+				String saltForUname = userTable.get(unameInput).getSalt();
+				String hashForPassword = password.getHash(); //Getting the hash of the password 
+				
+				String newPassword = saltForUname + passInput;
+				String hashForPasswordUserInput = genHash(newPassword); //
+				
+				String concadenatedsaltAndHash = saltForUname+":"+hashForPassword;
+				String concadenatedUserInput = saltForUname+":"+hashForPasswordUserInput;
 		
-		for(String username1: usernames){
-			//username1 = keyIterator.next();
-			if(username1 == unameInput ) { //If the username matches, check if the password matches
-				
-				System.out.println("Password?");
-				passInput = s1.nextLine();
-				
-				Password password = userTable.get(username1);
-				String saltForUname = userTable.get(username1).getSalt();
-				String hashForPassword = password.getHash(); //Getting the hash of the password
-				//String saltForPassword = password.getSalt();
-				
-				Password p = new Password(saltForUname, genHash(passInput));//Using the same salt code and generating the hash code for the password in the hash field
-				Password p1 = new Password(saltForUname, hashForPassword);//Using the same salt code and putting the hash of the password in the hash field
-				
-				
 
-				return p1 == p;
+				return concadenatedUserInput.equals(concadenatedsaltAndHash); //compare hashes instead
 			}
 			
-			
+			System.out.println("Username not found");// if the while loop runs out without finding the username this line is printed out.
+			return false;
+		
 		}
-		System.out.println("Username not found");// if the while loop runs out without finding the username this line is printed out.
-		return false;
-	}
+		
 	
 
 
