@@ -15,7 +15,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class UserLogin {
-
+	String string;
 	static Hashtable<String, Password> userTable = new Hashtable<>();	// stores all relevant info about authentication
 	private static final Random RandomObj = new SecureRandom();
 
@@ -26,18 +26,21 @@ public class UserLogin {
 	 */
 	private static void AddUsersToTable(File userFile) {
 		// STUB
-		try (Scanner s1= new Scanner(userFile)){
+		try {
 			
-			String nextString = s1.nextLine();
+		Scanner s1= new Scanner(userFile);
+			
+			
 			String username = null;
 			String salt = null;
 			String hash = null;
 		
 			while(s1.hasNext()) {
+		String nextString = s1.nextLine();
 		String user1[]= nextString.split(":");
-		user1[0]= username;
-		user1[1]= salt;
-		user1[2]= hash;
+		username = user1[0];
+		salt = user1[1];
+		hash = user1[2];
 		Password p1 = new Password(hash, salt);
 		userTable.put(username, p1);
 		
@@ -61,7 +64,22 @@ public class UserLogin {
 	 */
 	private static void WriteFile(File userFile) {
 		// STUB
+		Set<String>usernames =userTable.keySet();
+		
+		for(String username: usernames){
+			
+			Password password = userTable.get(username);
+			String saltForUname = userTable.get(username).getSalt();
+			String hashForPassword = password.getHash();
+			System.out.println(username+":"+saltForUname+":"+hashForPassword);
+			
+		}
+		
 	}
+	
+	public String toString(){ //Creating my toString method for WriteFile
+		  return string;  
+		 }  
 
 	
 	/**
