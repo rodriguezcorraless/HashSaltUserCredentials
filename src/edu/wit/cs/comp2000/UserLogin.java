@@ -76,10 +76,6 @@ public class UserLogin {
 		}
 		
 	}
-	
-	public String toString(){ //Creating my toString method for WriteFile
-		  return string;  
-		 }  
 
 	
 	/**
@@ -95,7 +91,7 @@ public class UserLogin {
 			String username = s.next();
 
 			System.out.println("Enter password:");
-			String password = s.next().toString();
+			String password = s.next();
 			
 			Password p = new Password(genSalt(), genHash(password));
 			userTable.put(username, p);
@@ -118,24 +114,22 @@ public class UserLogin {
 		Scanner s1 = new Scanner(System.in);
 		
 		String unameInput;
-		String username;
 		String passInput;
 		
 		System.out.println("Username?");
 		unameInput = s1.nextLine();
 		
 		Set<String>usernames =userTable.keySet();
-		Iterator<String> keyIterator = usernames.iterator();
 		
-		while(keyIterator.hasNext()) {
-			username = keyIterator.next();
-			if(username == unameInput ) { //If the username matches, check if the password matches
+		for(String username1: usernames){
+			//username1 = keyIterator.next();
+			if(username1 == unameInput ) { //If the username matches, check if the password matches
 				
 				System.out.println("Password?");
 				passInput = s1.nextLine();
 				
-				Password password = userTable.get(unameInput);
-				String saltForUname = userTable.get(unameInput).getSalt();
+				Password password = userTable.get(username1);
+				String saltForUname = userTable.get(username1).getSalt();
 				String hashForPassword = password.getHash(); //Getting the hash of the password
 				//String saltForPassword = password.getSalt();
 				
