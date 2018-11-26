@@ -5,6 +5,7 @@ package edu.wit.cs.comp2000;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -65,15 +66,23 @@ public class UserLogin {
 	private static void WriteFile(File userFile) {
 		// STUB
 		Set<String>usernames =userTable.keySet();
-		
-		for(String username: usernames){
+		try {
+			PrintWriter a = new PrintWriter(userFile);
 			
-			Password password = userTable.get(username);
-			String saltForUname = userTable.get(username).getSalt();
-			String hashForPassword = password.getHash();
-			System.out.println(username+":"+saltForUname+":"+hashForPassword);
-			
+			for(String username: usernames){
+				
+				Password password = userTable.get(username);
+				String saltForUname = userTable.get(username).getSalt();
+				String hashForPassword = password.getHash();
+				a.println(username+":"+saltForUname+":"+hashForPassword);
+				System.out.println(username+":"+saltForUname+":"+hashForPassword); 
+			}
+			a.flush();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 		
 	}
 
