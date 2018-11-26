@@ -9,8 +9,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 
 public class UserLogin {
 
@@ -24,44 +26,31 @@ public class UserLogin {
 	 */
 	private static void AddUsersToTable(File userFile) {
 		// STUB
-		StringBuilder username;
-		StringBuilder salt;
-		StringBuilder hash;
-		
 		try (Scanner s1= new Scanner(userFile)){
-			String nextString = s1.nextLine();
-		
-		int i=0;
-		
-		while(s1.hasNextLine()) { //While there is a next line (next user) do this whole process
 			
+			String nextString = s1.nextLine();
+			String username = null;
+			String salt = null;
+			String hash = null;
 		
-			while(!(nextString.charAt(i)==':')) { //While we do not encounter the character ':'we will append the characters to get the username
-			username = new StringBuilder().append(nextString.charAt(i));
-			i++;
+			while(s1.hasNext()) {
+		String user1[]= nextString.split(":");
+		user1[0]= username;
+		user1[1]= salt;
+		user1[2]= hash;
+		Password p1 = new Password(hash, salt);
+		userTable.put(username, p1);
+		
 			}
-			if(nextString.charAt(i) ==':') { 
-				i++; //Increment 'i' Look at next char after ':'
-				while(!(nextString.charAt(i)==':')) { //While we do not encounter the character ':'we will append the characters to get the salt
-					salt = new StringBuilder().append(nextString.charAt(i));
-					i++;
+		
+		
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+		System.err.println("File not found");
 		}
-		}
-			if(nextString.charAt(i) ==':') {
-				i++;
-				while(!(nextString.charAt(i)==':')) { //While we do not encounter the character ':'we will append the characters to get the salt
-					hash = new StringBuilder().append(nextString.charAt(i));
-					i++;
 	}
 		
-	}
-		}
-		}
-			catch (FileNotFoundException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	}
+
 		
 	
 	/**
@@ -89,8 +78,9 @@ public class UserLogin {
 
 			System.out.println("Enter password:");
 			String password = s.next().toString();
-			Password p = new Password(genHash(password), genSalt());
-			userTable.put(username, userTable.get(p));
+			
+			Password p = new Password(genSalt(), genHash(password));
+			userTable.put(username, p);
 	
 		return true;
 	}
@@ -107,8 +97,44 @@ public class UserLogin {
 	 */
 	private static boolean Login(Scanner s) {
 		// STUB
+		Scanner s1 = new Scanner(System.in);
+		
+		String unameInput;
+		String username;
+		String passInput;
+		
+		System.out.println("Username?");
+		unameInput = s1.nextLine();
+		
+		Set<String>usernames =userTable.keySet();
+		Iterator<String> keyIterator = usernames.iterator();
+		
+		while(keyIterator.hasNext()) {
+			username = keyIterator.next();
+			if(username == unameInput ) { //If the username matches, check if the password matches
+				
+				System.out.println("Password?");
+				passInput = s1.nextLine();
+				
+				Password password = userTable.get(unameInput);
+				String saltForUname = userTable.get(unameInput).getSalt();
+				String hashForPassword = password.getHash(); //Getting the hash of the password
+				//String saltForPassword = password.getSalt();
+				
+				Password p = new Password(saltForUname, genHash(passInput));//Using the same salt code and generating the hash code for the password in the hash field
+				Password p1 = new Password(saltForUname, hashForPassword);//Using the same salt code and putting the hash of the password in the hash field
+				
+				
+
+				return p1 == p;
+			}
+			
+			
+		}
+		System.out.println("Username not found");// if the while loop runs out without finding the username this line is printed out.
 		return false;
 	}
+	
 
 
 	/**
