@@ -21,7 +21,7 @@ public class UserLogin {
 	private static final Random RandomObj = new SecureRandom();
 
 	/**
-	 * Reads lines from the userFile, parses them, and adds the results to the userTable
+	 * Reads lines from the 'Users', parses them, and adds the results to the userTable
 	 * 
 	 * @param userFile A File object to read from
 	 */
@@ -199,7 +199,7 @@ public class UserLogin {
 			System.err.println("SHA-512 not available");
 			System.exit(1);
 		}
-		// Update the object with the hash of ‘someStringToHash’
+		// Update the object with the hash of â€˜someStringToHashâ€™
 		myDigest.update(p.getBytes());
 		
 		// Get the SHA-512 hash from the object
@@ -212,13 +212,13 @@ public class UserLogin {
 	public static void main(String[] args) {
 
 		Scanner s = new Scanner(System.in);
-
-		System.out.print("Enter user file: ");
+		System.out.println("Enter user file, default is userFiles\\Users :");
+	
 		File userFile = new File(s.nextLine());
 		AddUsersToTable(userFile);
 
 		while (true) {
-			System.out.print ("Would you like to (L)og in, (A)dd a new user, or (Q)uit? ");
+			System.out.print ("Would you like to (A)dd a new user, (L)og in,  or (Q)uit? ");
 			char choice = s.nextLine().charAt(0);
 
 			switch (choice) {
